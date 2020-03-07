@@ -3,6 +3,7 @@
 ; BSD 2-clause license
 
 .include "zp.inc"
+.include "mem.inc"
 
 .enum VERA
   BASE = $9f20
@@ -26,24 +27,19 @@
 INC1  = $100000
 INC4K = $d00000
 
-.mac poke addr, value
-  .if .const(value) && (value = 0)
-    stz addr
-  .else
-    lda #value
-    sta addr
-  .endif
+.mac vset addr, last
+  pokew VERA::ADDR_L, .loword(addr), last
+  poke VERA::ADDR_H, .bankbyte(addr), .hibyte(addr)
 .endmac
 
-.mac vset addr
-  poke VERA::ADDR_L, .lobyte(addr)
-  poke VERA::ADDR_M, .hibyte(addr)
-  poke VERA::ADDR_H, .bankbyte(addr)
+.mac vpoke addr, value, last
+  vset addr, last
+  poke VERA::DATA0, value, .hibyte(addr)
 .endmac
 
-.mac vpoke addr, value
+.mac vpokes addr, r1,r2,r3,r4,r5,r6,r7
   vset addr
-  poke VERA::DATA0, value
+  vputs, r1,r2,r3,r4,r5,r6,r7
 .endmac
 
 .mac vin
@@ -54,8 +50,20 @@ INC4K = $d00000
   sta VERA::DATA0
 .endmac
 
-.mac vput value
-  poke VERA::DATA0, value
+.mac vput value, last
+  poke VERA::DATA0, value, last
+.endmac
+
+.mac vputs_after last,r1,r2,r3,r4,r5,r6,r7
+  .ifblank r1
+    .exitmacro
+  .endif
+  vput r1,last
+  vputs_after r1,r2,r3,r4,r5,r6,r7
+.endmac
+
+.mac vputs r1,r2,r3,r4,r5,r6,r7
+  vputs_after 0,r1,r2,r3,r4,r5,r6,r7
 .endmac
 
 ; display controller
@@ -104,15 +112,11 @@ INC4K = $d00000
   .assert tilew < 2, error, "invalid tile width"
   .assert layer < 2, error, "invalid layer"
   .assert palette_offset < 16, error, "invalid bitmap palette offset"
-  vset VREG::LAYER0 + layer<<12 + INC1 
-  vput mode << 5 + 1
-  vput tilew << 4
-  vput 0
-  vput 0
-  vput <(base >> 2)
-  vput <(base >> 10)
-  vput 0
-  vput palette_offset
+  vset VREG::LAYER0 + layer<<12 + INC1
+  vputs mode << 5 + 1, tilew << 4
+  vputs 0, 0
+  vputs <(base >> 2), <(base >> 10)
+  vputs 0, palette_offset
 .endmac
 
 globalreg "RBLIT"
