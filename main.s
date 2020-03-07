@@ -3,13 +3,14 @@
 
 .export init
 
-.code
+.segment "LOWCODE"
 .proc init
   ; init bss here
   ; TODO: copy sw16 to the top of memory
   jmp main
 .endproc
 
+.code
 .proc main
   vera_init
   blit dc
