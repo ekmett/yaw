@@ -9,9 +9,9 @@
 .endmac
 
 .mac memory_copy source, target, len
-  wpoke R0, source
-  wpoke R1, target
-  wpoke R2, len
+  pokew R0, source
+  pokew R1, target
+  pokew R2, len
   jmp $fee7
 .endmac  
 
@@ -24,25 +24,26 @@ kload   = $ffd5
   .local namedata
   .pushseg
   .data
-  name: .byte namestr
+  namedata: .byte namestr
   .popseg
-  .if blank(device)
+
+  .if .blank(device)
     lda #8
   .else
     lda #device
   .endif
   lda #device
   ldx #2
-  .if blank(secondary)
+  .if .blank(secondary)
   ldy #0
   .else
   ldy #secondary
   .endif
   jsr ksetlfs
   
-  lda sizeof(name)
-  ldx <name
-  ldy >name
+  lda .sizeof(namedata)
+  ldx #<namedata
+  ldy #>namedata
   jsr ksetnam
  
   lda #1

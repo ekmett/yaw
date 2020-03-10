@@ -30,7 +30,11 @@
 
 
 .import VERA_NIBCOUNT
-NIBCOUNT = VERA_NIBCOUNT                         ; zero-page location for temp offset
+NIBCOUNT = 34; zero-page location for temp offset, TODO get more systematic about this
+
+.ifref decompress_lzsa2
+
+.export decomprss_lzsa2
 .export PORT_LZSA_DST_LO, PORT_LZSA_DST_HI
 .export PORT_LZSA_SRC_LO, PORT_LZSA_SRC_HI
 
@@ -250,3 +254,4 @@ PORT_LZSA_SRC_HI = *+2
    inc getsrc+2
 getsrc_done:
    rts
+.endif

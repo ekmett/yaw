@@ -1,5 +1,6 @@
 .include "vera.inc"
 .include "data.inc"
+.include "kernal.inc"
 
 .export init
 .import __BSS_RUN__, __BSS_SIZE__
@@ -19,19 +20,19 @@
 .code
 .proc main
   ; load resources
-  puts "loading bank 1"
+  ;puts "loading bank 1"
   rambank 1
   load "bank-1.bin",8,1
-  puts "loading bank 2"
+  ;puts "loading bank 2"
   rambank 2
   load "bank-2.bin",8,1
   rambank 1
   vera_init
-  blit dc
+  ; blit dc
   init_bitmap_layer 0, 6, 0, 0, 0
   init_bitmap_layer 1, 6, 0, (320*240>>1), 1
   vset VREG::PALETTE
-  blit palette
+  ; blit palette
   rts
 .endproc
 
@@ -64,6 +65,7 @@ loop:
   .endscope
 .endmac
 
-.proc console
-  lda #$80
-  jsr kscreen_set_mode
+;.proc console
+;  lda #$80
+;  jsr kscreen_set_mode
+;.endproc

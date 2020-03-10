@@ -8,7 +8,7 @@ clean:
 run: all
 	x16emu -prg main.prg -run
 
-main.prg: basic.o main.o vera.o yaw.cfg
+main.prg: basic.o main.o vera.o yaw.cfg lzsa.o
 	cl65 -t cx16 -C yaw.cfg -O -o $@ basic.o main.o vera.o lzsa.o
 
 %.o: %.s

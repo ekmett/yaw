@@ -125,28 +125,24 @@ INC4K = $d00000
 .mac init_tiled_layer layer, mode, 
 
 globalreg "RBLIT"
+.import blit_big
 
 .mac blit_with_len data, len
   .assert .bankbyte(len) = 0, error, "too much"
   .if .hibyte(len) > 0
-    .import blit_big
-    ; setup up slow blit
     ldx #>len
     ldy #<len
     pokew RBLIT, data
     jsr blit_big
   .else
-    .local loop
     ldy #<(256-len)
-    loop:
-      lda .loword(data+len), y
-      vout
-      iny
-      bmi loop
+  : lda .loword(data+len), y
+    vout
+    iny
+    bmi :-
   .endif
 .endmac
 
-; send n bytes of data to VERA
 .mac blit data, len
   .ifblank len
      blit_with_len data, .sizeof(data)
@@ -158,8 +154,8 @@ globalreg "RBLIT"
 .import PORT_LZSA_SRC_LO, PORT_LZSA_SRC_HI
 .import PORT_LZSA_DST_LO, PORT_LZSA_DST_HI
 
-.define is_imm(src) .match(.left(1,{src}),#)
-.define as_imm(src) .right(.tcount({src})-1,{src})
+;.define is_imm(src) .match(.left(1,{src}),#)
+;.define as_imm(src) .right(.tcount({src})-1,{src})
 ; movw R(0), addr
 ; movw addr, R(0)
 ; movw R(1), R(3)
