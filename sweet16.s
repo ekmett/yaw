@@ -5,23 +5,17 @@
 ; TITLE: SWEET 16 INTERPRETER
 
 .include "sweet16.inc"
+.include "zp.inc"
 
 .pc02
 
-.bss
-acc: .res 1
-xreg: .res 1
-yreg: .res 1
-status: .res 1
+.data
+acc: .byte 0
+xreg: .byte 0
+yreg: .byte 0
+status: .byte 0
 
-.segment "ZP2": zeropage
-.align 2
-RSWEET16: .res 32
-
-R12 = R(12)
-
-.segment "SW16"
-
+.code
 .proc save
   sta acc
   stx xreg

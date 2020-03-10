@@ -1,17 +1,9 @@
 .import init
 
-.mac digit addr,base
-  .lobytes ($30 + (addr/base) .mod 10)
-.endmac
-
 .mac sys addr
-.byte $9e," "
 .assert addr/10000 = 0,error,"starting address too large"
-;digit addr,10000
-digit addr,1000
-digit addr,100
-digit addr,10
-digit addr,1
+
+.lobytes $9e," ",$30 + (addr/1000) .mod 10, $30 + (addr/100) .mod 10, $30 + (addr/10) .mod 10, $30 .mod 10
 .endmac
 
 .segment "EXEHDR"

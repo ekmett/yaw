@@ -1,3 +1,6 @@
+.ifndef VERA_INCLUDED
+.define VERA_INCLUDED 1
+
 ; VERA display routines
 ; (c) Edward Kmett 2020
 ; BSD 2-clause license
@@ -119,6 +122,8 @@ INC4K = $d00000
   vputs 0, palette_offset
 .endmac
 
+.mac init_tiled_layer layer, mode, 
+
 globalreg "RBLIT"
 
 .mac blit_with_len data, len
@@ -128,10 +133,7 @@ globalreg "RBLIT"
     ; setup up slow blit
     ldx #>len
     ldy #<len
-    lda #<data
-    sta RBLIT_L
-    lda #>data
-    sta RBLIT_H
+    pokew RBLIT, data
     jsr blit_big
   .else
     .local loop
@@ -152,3 +154,32 @@ globalreg "RBLIT"
      blit_with_len data, len
   .endif
 .endmac
+
+.import PORT_LZSA_SRC_LO, PORT_LZSA_SRC_HI
+.import PORT_LZSA_DST_LO, PORT_LZSA_DST_HI
+
+.define is_imm(src) .match(.left(1,{src}),#)
+.define as_imm(src) .right(.tcount({src})-1,{src})
+; movw R(0), addr
+; movw addr, R(0)
+; movw R(1), R(3)
+; movw R(4), #$1234
+; movew addr, #$1234
+.mac movw dst, src
+  .if is_imm(src)
+     pokew dst, as_imm(src)
+  .else
+     lda src
+     sta dst
+     lda 1+src
+     sta 1+dst
+  .endif
+.endmac
+
+; blit data from an lzsa compressed location in memory to vera
+.mac vlzsa data
+  pokew PORT_LZSA_DST, VERA::DATA0
+  movw PORT_LZSA_SRC, data
+.endmac
+
+.endif
