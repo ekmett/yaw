@@ -151,31 +151,31 @@ globalreg "RBLIT"
 .import PORT_LZSA_SRC_LO, PORT_LZSA_SRC_HI
 .import PORT_LZSA_DST_LO, PORT_LZSA_DST_HI
 
-;.define is_imm(src) .match(.left(1,{src}),#)
-;.define as_imm(src) .right(.tcount({src})-1,{src})
+.define is_imm(src) .match(.left(1,{src}),#)
+.define as_imm(src) .right(.tcount({src})-1,{src})
 ; movw R(0), addr
 ; movw addr, R(0)
 ; movw R(1), R(3)
 ; movw R(4), #$1234
 ; movew addr, #$1234
 .mac movw dst, src
-  ;.if .const(src) && is_imm(src)
-  ;   pokew dst, as_imm(src)
-  ;.else
+  .if .const(src) && is_imm(src)
+     pokew dst, as_imm(src)
+  .else
      lda src
      sta dst
      lda 1+src
      sta 1+dst
-  ;.endif
+  .endif
 .endmac
 
 .mac mov dst, src
-  ;.if .const(src) && is_imm(src)
-  ;   poke dst, as_imm(src)
-  ;.else
+  .if .const(src) && is_imm(src)
+     poke dst, as_imm(src)
+  .else
      lda src
      sta dst
-  ;.endif
+  .endif
 .endmac
 
 ; blit data from an lzsa compressed location in memory to vera
