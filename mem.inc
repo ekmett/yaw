@@ -18,12 +18,12 @@ INCLUDED_MEM = 1
   .endif
 .endmac
 
-.mac pokes addr,r1,r2,r3,r4,r5,r6,r7,r8
+.mac pokes addr,r1,r2,r3,r4,r5,r6,r7
   .if .blank(r1)
     .exitmacro
   .endif
   poke addr, r1
-  pokes addr+1,r2,r3,r4,r5,r6,r7,r8
+  pokes addr+1,r2,r3,r4,r5,r6,r7
 .endmac
 
 .mac pokew addr, value
@@ -31,12 +31,12 @@ INCLUDED_MEM = 1
   poke addr+1, >value
 .endmac
 
-.mac pokews addr,r1,r2,r3,r4,r5,r6,r7,r8
+.mac pokews addr,r1,r2,r3,r4,r5,r6,r7
   .if .blank(r1)
     .exitmacro
   .endif
   pokew addr,r1,last
-  pokews addr+2,r2,r3,r4,r5,r6,r7,r8
+  pokews addr+2,r2,r3,r4,r5,r6,r7
 .endmac
 
 .endif
