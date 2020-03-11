@@ -1,3 +1,6 @@
+.ifndef INCLUDED_DATA
+INCLUDED_DATA = 1
+
 .data
 
 .proc palette
@@ -11,3 +14,5 @@
   border_color = 10
   .byte 64,64,border_color,0,128,0,224,40
 .endproc
+
+.endif

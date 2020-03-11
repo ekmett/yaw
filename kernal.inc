@@ -1,3 +1,9 @@
+.ifndef INCLUDED_KERNAL
+INCLUDED_KERNAL = 1
+
+.include "mem.inc"
+.include "zp.inc"
+
 .mac jsrfar addr
   jmp $ff6e
   .loword addr
@@ -6,6 +12,13 @@
 
 .mac monitor
   jmp $ff44
+.endmac
+
+.mac memory_fill data, len, value
+  pokew R(0), data
+  pokew R(1), len
+  lda #value
+  jsr $fee4
 .endmac
 
 .mac memory_copy source, target, len
@@ -50,3 +63,5 @@ kload   = $ffd5
   ldy $20
   jsr kload
 .endmac
+
+.endif

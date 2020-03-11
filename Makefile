@@ -1,6 +1,6 @@
 .PHONY: all clean run
 
-all: main.prg
+all: main.prg split.prg
 
 clean:
 	rm -f *.o *.prg *.l
@@ -8,8 +8,15 @@ clean:
 run: all
 	x16emu -prg main.prg -run
 
-main.prg: basic.o main.o vera.o yaw.cfg lzsa.o
-	cl65 -t cx16 -C yaw.cfg -O -o $@ basic.o main.o vera.o lzsa.o
+MAIN=basic.o main.o vera.o lzsa.o init.o
+
+main.prg: yaw.cfg $(MAIN)
+	cl65 -t cx16 -C yaw.cfg -O -o $@ $(MAIN)
+
+SPLIT=basic.o init.o split.o
+split.prg: yaw.cfg $(SPLIT)
+	cl65 -t cx16 -C yaw.cfg -O -o $@ $(SPLIT)
+
 
 %.o: %.s
 	ca65 -t cx16 -g -o $@ $< -l $(@:.o=.l)

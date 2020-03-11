@@ -1,5 +1,5 @@
-.ifndef ZP_INCLUDED
-.define ZP_INCLUDED 1
+.ifndef INCLUDED_ZP
+INCLUDED_ZP = 1
 
 .mac reg name
   .pushseg

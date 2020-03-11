@@ -1,5 +1,5 @@
 .ifndef VERA_INCLUDED
-.define VERA_INCLUDED 1
+VERA_INCLUDED = 1
 
 ; VERA display routines
 ; (c) Edward Kmett 2020
@@ -10,6 +10,7 @@
 
 .enum VERA
   BASE = $9f20
+  ADDR = BASE
   ADDR_L = BASE
   ADDR_M
   ADDR_H
@@ -30,19 +31,19 @@
 INC1  = $100000
 INC4K = $d00000
 
-.mac vset addr, last
-  pokew VERA::ADDR_L, .loword(addr), last
-  poke VERA::ADDR_H, .bankbyte(addr), .hibyte(addr)
+.mac vset addr
+  pokew VERA::ADDR_L, .loword(addr)
+  poke VERA::ADDR_H, .bankbyte(addr)
 .endmac
 
-.mac vpoke addr, value, last
-  vset addr, last
-  poke VERA::DATA0, value, .hibyte(addr)
-.endmac
-
-.mac vpokes addr, r1,r2,r3,r4,r5,r6,r7
+.mac vpoke addr, value
   vset addr
-  vputs, r1,r2,r3,r4,r5,r6,r7
+  poke VERA::DATA0, value
+.endmac
+
+.mac vpokes addr,r1,r2,r3,r4,r5,r6,r7
+  vset addr
+  vputs r1,r2,r3,r4,r5,r6,r7
 .endmac
 
 .mac vin
@@ -53,20 +54,16 @@ INC4K = $d00000
   sta VERA::DATA0
 .endmac
 
-.mac vput value, last
-  poke VERA::DATA0, value, last
-.endmac
-
-.mac vputs_after last,r1,r2,r3,r4,r5,r6,r7
-  .ifblank r1
-    .exitmacro
-  .endif
-  vput r1,last
-  vputs_after r1,r2,r3,r4,r5,r6,r7
+.mac vput value
+  poke VERA::DATA0, value
 .endmac
 
 .mac vputs r1,r2,r3,r4,r5,r6,r7
-  vputs_after 0,r1,r2,r3,r4,r5,r6,r7
+  .ifblank r1
+    .exitmacro
+  .endif
+  vput r1
+  vputs r2,r3,r4,r5,r6,r7
 .endmac
 
 ; display controller
@@ -162,14 +159,23 @@ globalreg "RBLIT"
 ; movw R(4), #$1234
 ; movew addr, #$1234
 .mac movw dst, src
-  .if is_imm(src)
-     pokew dst, as_imm(src)
-  .else
+  ;.if .const(src) && is_imm(src)
+  ;   pokew dst, as_imm(src)
+  ;.else
      lda src
      sta dst
      lda 1+src
      sta 1+dst
-  .endif
+  ;.endif
+.endmac
+
+.mac mov dst, src
+  ;.if .const(src) && is_imm(src)
+  ;   poke dst, as_imm(src)
+  ;.else
+     lda src
+     sta dst
+  ;.endif
 .endmac
 
 ; blit data from an lzsa compressed location in memory to vera

@@ -1,3 +1,7 @@
+.ifndef INCLUDED_F16
+INCLUDED_F16 = 1
+
+
 ; f16: freshman 16 -- a lot heavier than sweet 16
 
 ; ldax R(0)
@@ -101,3 +105,5 @@
     asl dst
     rol 1+dst
   .endif
+
+.endif

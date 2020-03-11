@@ -6,7 +6,7 @@
 
 reg "RBLIT"
 
-.segment "LOWCODE"
+.code
 .proc blit_big
   lda (RBLIT),y
   vout

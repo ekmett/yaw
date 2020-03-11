@@ -2,31 +2,18 @@
 .include "data.inc"
 .include "kernal.inc"
 
-.export init
-.import __BSS_RUN__, __BSS_SIZE__
-
-.segment "LOWCODE"
-.proc init
-  ; memory_fill bss with 0s
-  pokew R(0),__BSS_RUN__
-  pokew R(1),__BSS_SIZE__
-  lda #0
-  jsr $fee4
-  ; init bss here
-  ; TODO: copy sw16 to the top of memory
-  jmp main
-.endproc
+.export main
 
 .code
 .proc main
   ; load resources
   ;puts "loading bank 1"
-  rambank 1
-  load "bank-1.bin",8,1
+  ;rambank 1
+  ;load "bank-1.bin",8,1
   ;puts "loading bank 2"
-  rambank 2
-  load "bank-2.bin",8,1
-  rambank 1
+  ;rambank 2
+  ;load "bank-2.bin",8,1
+  ;rambank 1
   vera_init
   ; blit dc
   init_bitmap_layer 0, 6, 0, 0, 0
@@ -53,7 +40,7 @@ loop:
      foreach_with_len data,len
   .endif
 .endmac
-    
+
 
 .mac endforeach
     iny
